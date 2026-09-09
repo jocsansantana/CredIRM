@@ -50,7 +50,7 @@ CredIRM es una aplicación desarrollada con Django que permite llevar un control
 
 ---
 
-##  Tecnologías utilizadas
+## Tecnologías utilizadas
 
 - Python
 - Django 4.2
@@ -92,3 +92,161 @@ CredIRM/
 ├── manage.py
 ├── requirements.txt
 └── README.md
+```
+## Instalación
+- Clonar el repositorio
+git clone https://github.com/jocsansantana/CredIRM.git
+- Entrar al proyecto
+cd CredIRM
+- Crear un entorno virtual
+
+## Windows:
+
+python -m venv .venv / py -m venv .venv
+
+Activar el entorno:
+
+.venv\Scripts\activate
+
+## Linux / macOS:
+
+python3 -m venv .venv
+source .venv/bin/activate
+
+- Instalar las dependencias
+pip install -r requirements.txt
+
+- Aplicar las migraciones
+python manage.py migrate
+
+- Crear un usuario administrador
+python manage.py createsuperuser
+
+- Ejecutar el servidor
+python manage.py runserver
+
+## Luego abre:
+
+http://127.0.0.1:8000/
+
+## Roles y permisos
+
+El sistema utiliza el sistema de autenticación de Django.
+
+Los usuarios autenticados pueden acceder a las funcionalidades del sistema, mientras que determinadas acciones administrativas requieren permisos de administrador.
+
+## Modelo de datos
+
+El sistema está organizado principalmente alrededor de cuatro entidades:
+```text
+Cliente
+   │
+   └─── Préstamo
+          │
+          └─── Cuota
+                 │
+                 └─── Pago
+```
+## Cliente
+Contiene información básica del cliente:
+
+- Nombres
+- Apellidos
+- Cédula
+- Teléfono
+- Fecha de registro
+- Estado
+- Préstamo
+
+## Permite registrar:
+
+- Cliente
+- Monto
+- Tasa de interés
+- Número de cuotas
+- Frecuencia de pago
+- Fecha de inicio
+- Fecha de finalización
+- Interés total
+- Total a pagar
+- Estado
+- Observaciones
+- Cuota
+
+## Cada préstamo puede tener varias cuotas con:
+
+- Número de cuota
+- Fecha de vencimiento
+- Capital
+- Interés
+- Monto
+- Estado
+- Pago
+
+## Cada cuota puede registrar pagos indicando:
+
+- Fecha
+- Monto
+- Método de pago
+- Referencia
+- Observaciones
+- Estados de los préstamos
+
+## Los préstamos pueden encontrarse en los siguientes estados:
+
+- PENDIENTE
+- ACTIVO
+- PAGADO
+- VENCIDO
+- CANCELADO
+
+## Las cuotas pueden estar:
+
+- PENDIENTE
+- PAGADA
+- VENCIDA
+
+## Desarrollo
+---
+Para ejecutar el proyecto en modo desarrollo:
+
+python manage.py runserver
+
+Para comprobar que Django no tenga errores de configuración:
+
+python manage.py check
+
+## Dependencias
+
+Las principales dependencias del proyecto son:
+
+- Django==4.2
+- asgiref==3.12.1
+- sqlparse==0.5.5
+- tzdata==2026.3
+- Próximas mejoras
+
+## Algunas funcionalidades que podrían incorporarse en futuras versiones:
+
+ - Generación de reportes
+ - Exportación a PDF
+ - Exportación a Excel
+ - Gráficos estadísticos
+ - Búsqueda avanzada de clientes
+ - Historial de pagos
+ - Notificaciones de cuotas próximas a vencer
+ - Mejoras en el diseño responsive
+ - Pruebas automatizadas
+ - Despliegue en producción
+ 
+## Licencia
+
+Este proyecto se encuentra actualmente en desarrollo.
+
+Autor: Jocsan Santana
+
+## GitHub:
+https://github.com/jocsansantana
+
+## Repositorio:
+https://github.com/jocsansantana/CredIRM
