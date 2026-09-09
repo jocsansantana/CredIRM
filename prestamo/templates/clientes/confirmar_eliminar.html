@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Eliminar Cliente</h2>
+            <div class="page-title-sub">Esta acción no se puede deshacer</div>
+        </div>
+    </div>
+
+    <div class="dark-panel" style="max-width: 520px;">
+        <div class="dark-panel-body">
+
+            <div class="alert-dash alert-dash-warning" style="display:block;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                ¿Estás seguro de que deseas eliminar a
+                <strong>{{ cliente.nombres }} {{ cliente.apellidos }}</strong>?
+                Esta acción eliminará permanentemente su registro.
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <a href="{% url 'clientes' %}" class="btn-dash-outline">Cancelar</a>
+                    <button type="submit" class="btn-dash-danger">
+                        <i class="fa-solid fa-trash"></i> Sí, eliminar
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

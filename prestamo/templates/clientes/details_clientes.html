@@ -1,0 +1,62 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Detalles del Cliente</h2>
+            <div class="page-title-sub">Información completa del registro</div>
+        </div>
+        <a href="{% url 'clientes' %}" class="btn-dash-outline">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <div class="dark-panel">
+        <div class="dark-panel-header">Información del cliente</div>
+        <div class="dark-panel-body">
+
+            <div class="detail-row">
+                <div class="detail-label">ID</div>
+                <div class="detail-value">{{ cliente.id }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Nombre</div>
+                <div class="detail-value">{{ cliente.nombres }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Apellidos</div>
+                <div class="detail-value">{{ cliente.apellidos }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Cédula</div>
+                <div class="detail-value">{{ cliente.cedula }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Teléfono</div>
+                <div class="detail-value">{{ cliente.telefono }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Estado</div>
+                <div class="detail-value">
+                    {% if cliente.estado %}
+                        <span class="badge-pill badge-pill-green">Activo</span>
+                    {% else %}
+                        <span class="badge-pill badge-pill-red">Inactivo</span>
+                    {% endif %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

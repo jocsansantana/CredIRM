@@ -1,0 +1,126 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+<div class="dash-wrap">
+
+    <!-- HERO -->
+    <div class="hero-banner">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+
+        <div class="hero-left">
+            <span class="hero-tag">DASHBOARD</span>
+            <h1 class="hero-title">Buenos días, {{ user.first_name|capfirst }} 👋</h1>
+            <p class="hero-sub">Este es el resumen de tu operación hoy.</p>
+            <a href="{% url 'clientes' %}" class="hero-btn">Ver clientes <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-value">${{ cobrado_mes }}</div>
+                <div class="hero-stat-label">Cobrado este mes</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">{{ total_prestamos }}</div>
+                <div class="hero-stat-label">Préstamos activos</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-value">{{ total_clientes }}</div>
+                <div class="hero-stat-label">Clientes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+
+        <div class="kpi-card">
+            <div class="kpi-icon kpi-icon-purple"><i class="fa-solid fa-users"></i></div>
+            <div class="kpi-value">{{ total_clientes }}</div>
+            <div class="kpi-label">Clientes activos</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon kpi-icon-blue"><i class="fa-solid fa-sack-dollar"></i></div>
+            <div class="kpi-value">{{ total_prestamos }}</div>
+            <div class="kpi-label">Prestamos activos</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon kpi-icon-green"><i class="fa-solid fa-dollar-sign"></i></div>
+            <div class="kpi-value">${{ cobrado_mes }}</div>
+            <div class="kpi-label">Cobrado este mes</div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon kpi-icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="kpi-value">{{ cuotas_atrasadas|length }}</div>
+            <div class="kpi-label">Cuotas atrasadas</div>
+        </div>
+
+    </div>
+
+    <!-- ACCESOS RAPIDOS -->
+    <div class="quick-actions">
+        <a href="{% url 'crear_cliente' %}" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo cliente</a>
+        <a href="#" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo prestamo</a>
+        <a href="#" class="qa-btn qa-btn-outline"><i class="fa-solid fa-hand-holding-dollar"></i> Registrar pago</a>
+    </div>
+
+    <!-- PANELES INFERIORES -->
+    <div class="panel-grid">
+
+        <div class="panel">
+            <div class="panel-header">Cuotas atrasadas</div>
+            <div class="panel-body no-pad">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Monto</th>
+                            <th>Dias de mora</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cuota in cuotas_atrasadas %}
+                        <tr>
+                            <td>{{ cuota.prestamo.cliente.nombres }}</td>
+                            <td>${{ cuota.monto }}</td>
+                            <td><span class="badge-pill badge-pill-red">{{ cuota.dias_mora }}</span></td>
+                            <td class="text-end">
+                                <a href="#" class="link-action">Ver</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-row">No hay cuotas atrasadas.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">Actividad reciente</div>
+            <div class="panel-body no-pad">
+                <ul class="activity-list">
+                    {% for pago in pagos_recientes %}
+                    <li>
+                        <span>{{ pago.cuota.prestamo.cliente.nombres }}</span>
+                        <span class="activity-amount">${{ pago.monto }}</span>
+                    </li>
+                    {% empty %}
+                    <li class="empty-row">Sin actividad reciente.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
