@@ -10,20 +10,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
-
+from .utils import registrar_actividad
 
 #DEFINE QUIEN ES EL ADMINISTRADOR
 def es_admin(user):
     return user.is_staff
 
-
-#CRUD DE CLIENTES
 @login_required
 def index(request):
     total_clientes = Cliente.objects.count()
-    total_prestamos = Prestamo.objects.filter(estado='Activo').count()
-    cuotas_atrasadas = Cuota.objects.filter(estado='Vencida').select_related('prestamo__cliente')
-    pagos_recientes = Pago.objects.select_related('cuota__prestamo__cliente').order_by('-fecha_pago')[:5]
+    total_prestamos = Prestamo.objects.filter(estado='ACTIVO').count() 
+    cuotas_atrasadas = Cuota.objects.filter(estado='VENCIDA').select_related('prestamo__cliente') 
+    actividades_recientes = Actividad.objects.select_related('usuario')[:5]
     cobrado_mes = Pago.objects.filter(
         fecha_pago__month=timezone.now().month
     ).aggregate(total=Sum('monto'))['total'] or 0
@@ -32,10 +30,11 @@ def index(request):
         'total_clientes': total_clientes,
         'total_prestamos': total_prestamos,
         'cuotas_atrasadas': cuotas_atrasadas,
-        'pagos_recientes': pagos_recientes,
+        'actividades_recientes': actividades_recientes,
         'cobrado_mes': cobrado_mes,
     })
 
+#CRUD DE CLIENTES
 @login_required 
 def clientes(request):
     clientes = Cliente.objects.all()
@@ -50,11 +49,17 @@ def cliente_detalle(request, id):
     })
 
 @login_required
+@login_required
 def crear_cliente(request):
     if request.method=='POST':
         form = ClienteForm(request.POST)
         if form.is_valid():
-            form.save()
+            cliente = form.save()
+            registrar_actividad(
+                tipo='cliente',
+                descripcion=f'Nuevo cliente registrado: {cliente.nombres} {cliente.apellidos}',
+                usuario=request.user
+            )
             messages.success(request,'Cliente creado exitosamente')
             return redirect('clientes')
     else:
@@ -95,3 +100,28 @@ class CustomLoginView(LoginView):
 def cerrar_sesion(request):
     logout(request)
     return redirect('login')
+
+
+#CRUD PARA PRESTAMOS
+@login_required
+def prestamos(request):
+    prestamos = Prestamo.objects.all()
+    template = loader.get_template('prestamos/display_prestamos.html')
+    return HttpResponse(template.render({'prestamos': prestamos}, request))
+
+@login_required
+def crear_prestamo(request):
+    if request.method == 'POST':
+        form = PrestamoForm(request.POST)
+        if form.is_valid():
+            prestamo = form.save()
+            registrar_actividad(
+                tipo='prestamo',
+                descripcion=f'Préstamo de ${prestamo.monto} otorgado a {prestamo.cliente}',
+                usuario=request.user
+            )
+            messages.success(request, 'Préstamo creado exitosamente')
+            return redirect('prestamos')
+    else:
+        form = PrestamoForm()
+    return render(request, 'prestamos/form_prestamos.html', {'form': form})

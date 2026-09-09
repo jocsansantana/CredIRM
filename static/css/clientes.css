@@ -352,3 +352,71 @@
         width: 100%;
     }
 }
+
+@media (max-width: 768px) {
+    .page-wrap {
+        padding: 1.1rem;
+    }
+
+    .dash-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .detail-row {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .detail-label {
+        width: auto;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions .btn-dash-primary,
+    .form-actions .btn-dash-outline,
+    .form-actions .btn-dash-danger {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* ---------- FORMULARIOS RESPONSIVOS ---------- */
+    .row {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .col-md-6 {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .dark-panel-body {
+        padding: 1rem;
+    }
+
+    .form-compact input[type="text"],
+    .form-compact input[type="number"],
+    .form-compact input[type="date"],
+    .form-compact select,
+    .form-compact textarea,
+    .dark-panel input[type="text"],
+    .dark-panel input[type="number"],
+    .dark-panel input[type="date"],
+    .dark-panel select,
+    .dark-panel textarea {
+        font-size: 0.9rem;
+        padding: 0.55rem 0.7rem;
+    }
+}
+
+.dark-panel input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #14151f;
+}

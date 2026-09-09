@@ -13,4 +13,8 @@ urlpatterns = [
     path("login/", views.CustomLoginView.as_view(), name="login"),
     path("logout/", views.cerrar_sesion, name="logout"),
     
+    #SECCIÓN PARA PRESTAMOS
+    
+    path("prestamos/", views.prestamos, name="prestamos"),
+    path('prestamos/nuevo/', views.crear_prestamo, name='crear_prestamo'),
 ] 

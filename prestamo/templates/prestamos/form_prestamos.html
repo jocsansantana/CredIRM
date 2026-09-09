@@ -1,0 +1,148 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">
+                {% if form.instance.pk %}Editar Préstamo{% else %}Nuevo Préstamo{% endif %}
+            </h2>
+            <div class="page-title-sub">
+                {% if form.instance.pk %}Actualiza la información del préstamo{% else %}Completa los datos del nuevo préstamo{% endif %}
+            </div>
+        </div>
+        <a href="{% url 'prestamos' %}" class="btn-dash-outline">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-dash">
+                <span><i class="fa-solid fa-circle-check"></i> {{ message }}</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="dark-panel">
+        <div class="dark-panel-header">Datos del préstamo</div>
+        <div class="dark-panel-body">
+
+            <form method="post" novalidate class="form-compact">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.cliente.id_for_label }}" class="form-label-dash">Cliente</label>
+                        {{ form.cliente }}
+                        {% if form.cliente.errors %}
+                            <div class="form-error">{{ form.cliente.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.monto.id_for_label }}" class="form-label-dash">Monto</label>
+                        {{ form.monto }}
+                        {% if form.monto.errors %}
+                            <div class="form-error">{{ form.monto.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.tasa_interes.id_for_label }}" class="form-label-dash">Tasa de interés (%)</label>
+                        {{ form.tasa_interes }}
+                        {% if form.tasa_interes.errors %}
+                            <div class="form-error">{{ form.tasa_interes.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.numero_cuotas.id_for_label }}" class="form-label-dash">Número de cuotas</label>
+                        {{ form.numero_cuotas }}
+                        {% if form.numero_cuotas.errors %}
+                            <div class="form-error">{{ form.numero_cuotas.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- PREVIEW EN VIVO: solo informativo, no se envía al servidor -->
+                <div class="row">
+                    <div class="col-md-6 form-field">
+                        <label class="form-label-dash">Total interés (estimado)</label>
+                        <input type="text" id="preview_interes" value="$0.00" disabled>
+                    </div>
+
+                    <div class="col-md-6 form-field">
+                        <label class="form-label-dash">Total a pagar (estimado)</label>
+                        <input type="text" id="preview_total" value="$0.00" disabled>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.frecuencia_pago.id_for_label }}" class="form-label-dash">Frecuencia de pago</label>
+                        {{ form.frecuencia_pago }}
+                        {% if form.frecuencia_pago.errors %}
+                            <div class="form-error">{{ form.frecuencia_pago.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.estado.id_for_label }}" class="form-label-dash">Estado</label>
+                        {{ form.estado }}
+                        {% if form.estado.errors %}
+                            <div class="form-error">{{ form.estado.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label-dash">Fecha de inicio</label>
+                        {{ form.fecha_inicio }}
+                        {% if form.fecha_inicio.errors %}
+                            <div class="form-error">{{ form.fecha_inicio.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.fecha_fin.id_for_label }}" class="form-label-dash">Fecha de fin</label>
+                        {{ form.fecha_fin }}
+                        {% if form.fecha_fin.errors %}
+                            <div class="form-error">{{ form.fecha_fin.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.observaciones.id_for_label }}" class="form-label-dash">Observaciones</label>
+                    {{ form.observaciones }}
+                    {% if form.observaciones.errors %}
+                        <div class="form-error">{{ form.observaciones.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <hr class="form-divider">
+
+                <div class="form-actions">
+                    <button type="button" class="btn-dash-outline" onclick="history.back()">Cancelar</button>
+                    <button type="submit" class="btn-dash-primary">
+                        <i class="fa-solid fa-check"></i> Guardar
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="{% static 'js/prestamo_form.js' %}"></script>
+
+{% endblock %}

@@ -12,7 +12,7 @@
 
         <div class="hero-left">
             <span class="hero-tag">DASHBOARD</span>
-            <h1 class="hero-title">Buenos días, {{ user.first_name|capfirst }} 👋</h1>
+            <h1 class="hero-title">Buenos días, {{ user.first_name|capfirst }} </h1>
             <p class="hero-sub">Este es el resumen de tu operación hoy.</p>
             <a href="{% url 'clientes' %}" class="hero-btn">Ver clientes <i class="fa-solid fa-arrow-right"></i></a>
         </div>
@@ -65,7 +65,7 @@
     <!-- ACCESOS RAPIDOS -->
     <div class="quick-actions">
         <a href="{% url 'crear_cliente' %}" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo cliente</a>
-        <a href="#" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo prestamo</a>
+        <a href="{% url 'crear_prestamo' %}" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo prestamo</a>
         <a href="#" class="qa-btn qa-btn-outline"><i class="fa-solid fa-hand-holding-dollar"></i> Registrar pago</a>
     </div>
 
@@ -108,10 +108,10 @@
             <div class="panel-header">Actividad reciente</div>
             <div class="panel-body no-pad">
                 <ul class="activity-list">
-                    {% for pago in pagos_recientes %}
+                    {% for actividad in actividades_recientes %}
                     <li>
-                        <span>{{ pago.cuota.prestamo.cliente.nombres }}</span>
-                        <span class="activity-amount">${{ pago.monto }}</span>
+                        <span>{{ actividad.descripcion }}</span>
+                        <span class="activity-amount">{{ actividad.fecha|timesince }} atrás</span>
                     </li>
                     {% empty %}
                     <li class="empty-row">Sin actividad reciente.</li>
