@@ -1,0 +1,90 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Registrar Pago</h2>
+            <div class="page-title-sub">Registra el pago de una cuota</div>
+        </div>
+        <a href="{% url 'prestamos' %}" class="btn-dash-outline">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert-dash">
+                <span><i class="fa-solid fa-circle-check"></i> {{ message }}</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="dark-panel">
+        <div class="dark-panel-header">Datos del pago</div>
+        <div class="dark-panel-body">
+
+            <form method="post" novalidate class="form-compact">
+                {% csrf_token %}
+
+                <div class="form-field">
+                    <label for="{{ form.cuota.id_for_label }}" class="form-label-dash">Cuota</label>
+                    {{ form.cuota }}
+                    {% if form.cuota.errors %}
+                        <div class="form-error">{{ form.cuota.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.monto.id_for_label }}" class="form-label-dash">Monto</label>
+                        {{ form.monto }}
+                        {% if form.monto.errors %}
+                            <div class="form-error">{{ form.monto.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-6 form-field">
+                        <label for="{{ form.metodo_pago.id_for_label }}" class="form-label-dash">Método de pago</label>
+                        {{ form.metodo_pago }}
+                        {% if form.metodo_pago.errors %}
+                            <div class="form-error">{{ form.metodo_pago.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.referencia.id_for_label }}" class="form-label-dash">Referencia (opcional)</label>
+                    {{ form.referencia }}
+                    {% if form.referencia.errors %}
+                        <div class="form-error">{{ form.referencia.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="form-field">
+                    <label for="{{ form.observaciones.id_for_label }}" class="form-label-dash">Observaciones</label>
+                    {{ form.observaciones }}
+                    {% if form.observaciones.errors %}
+                        <div class="form-error">{{ form.observaciones.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <hr class="form-divider">
+
+                <div class="form-actions">
+                    <button type="button" class="btn-dash-outline" onclick="history.back()">Cancelar</button>
+                    <button type="submit" class="btn-dash-primary">
+                        <i class="fa-solid fa-check"></i> Registrar pago
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

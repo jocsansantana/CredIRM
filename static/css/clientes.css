@@ -430,3 +430,21 @@
     background: rgba(148, 152, 173, 0.18);
     color: #9498ad;
 }
+
+.quick-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.link-action {
+    color: #7b6bf0;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.link-action:hover {
+    color: #6a5cd6;
+    text-decoration: underline;
+}

@@ -220,3 +220,48 @@ def eliminar_prestamo(request, id):
         return redirect('prestamos')
 
     return render(request, 'prestamos/confirmar_eliminar.html', {'prestamo': prestamo})
+
+
+#CUOTAS
+@login_required
+def cuotas(request):
+    filtro = request.GET.get('estado', 'TODAS')
+
+    cuotas = Cuota.objects.select_related('prestamo__cliente').order_by('fecha_vencimiento')
+
+    if filtro != 'TODAS':
+        cuotas = cuotas.filter(estado=filtro)
+
+    return render(request, 'cuotas/display_cuotas.html', {
+        'cuotas': cuotas,
+        'filtro': filtro,
+    })
+
+@login_required
+def registrar_pago(request):
+    if request.method == 'POST':
+        form = PagoForm(request.POST)
+        if form.is_valid():
+            pago = form.save()
+
+            cuota = pago.cuota
+            cuota.estado = 'PAGADA'
+            cuota.save()
+
+            registrar_actividad(
+                tipo='pago',
+                descripcion=f'Pago de ${pago.monto} recibido de {cuota.prestamo.cliente}',
+                usuario=request.user
+            )
+
+            # Si todas las cuotas del préstamo ya están pagadas, marcar el préstamo como PAGADO
+            prestamo = cuota.prestamo
+            if not prestamo.cuotas.exclude(estado='PAGADA').exists():
+                prestamo.estado = 'PAGADO'
+                prestamo.save()
+
+            messages.success(request, 'Pago registrado exitosamente')
+            return redirect('prestamos')
+    else:
+        form = PagoForm()
+    return render(request, 'pagos/form_pago.html', {'form': form})

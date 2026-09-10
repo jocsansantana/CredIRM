@@ -21,4 +21,10 @@ urlpatterns = [
     path('prestamos/editar/<int:id>/', views.editar_prestamo, name='editar_prestamo'),
     path('prestamos/eliminar/<int:id>/', views.eliminar_prestamo, name='eliminar_prestamo'),
     path('clientes/<int:cliente_id>/prestamos/', views.prestamos_cliente, name='prestamos_cliente'),
+    
+    #SECCIÓN DE CUOTA
+    path('cuotas/', views.cuotas, name='cuotas'),
+    
+    #SECCIÓN DE PAGO
+    path('pagos/nuevo/', views.registrar_pago, name='registrar_pago'),
 ] 

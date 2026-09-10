@@ -7,7 +7,7 @@
 
     <div class="page-header">
         <div>
-            <h2 class="page-title">Cancelar Préstamo</h2>
+            <h2 class="page-title">Eliminar Cliente</h2>
             <div class="page-title-sub">Esta acción no se puede deshacer</div>
         </div>
     </div>
@@ -17,8 +17,8 @@
 
             <div class="alert-dash alert-dash-warning" style="display:block;">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                ¿Estás seguro de que deseas cancelar el préstamo
-                <strong>#{{ prestamo.id }}</strong> de
+                ¿Estás seguro de que deseas eliminar el cliente
+                <strong>#{{ cliente.id }}</strong> de
                 <strong>{{ prestamo.cliente.nombres }} {{ prestamo.cliente.apellidos }}</strong>
                 por <strong>${{ prestamo.monto }}</strong>?
                 Esta acción cambiará su estado a cancelado.
@@ -27,9 +27,9 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="form-actions">
-                    <a href="{% url 'prestamos' %}" class="btn-dash-outline">Cancelar</a>
+                    <a href="{% url 'clientes' %}" class="btn-dash-outline">Eliminar</a>
                     <button type="submit" class="btn-dash-danger">
-                        <i class="fa-solid fa-ban"></i> Sí, cancelar préstamo
+                        <i class="fa-solid fa-ban"></i> Sí, eliminar Cliente
                     </button>
                 </div>
             </form>

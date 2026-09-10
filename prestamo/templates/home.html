@@ -12,7 +12,7 @@
 
         <div class="hero-left">
             <span class="hero-tag">DASHBOARD</span>
-            <h1 class="hero-title">Buenos días, {{ user.first_name|capfirst }} </h1>
+            <h1 class="hero-title">Hola {{ user.first_name|capfirst }} </h1>
             <p class="hero-sub">Este es el resumen de tu operación hoy.</p>
             <a href="{% url 'clientes' %}" class="hero-btn">Ver clientes <i class="fa-solid fa-arrow-right"></i></a>
         </div>
@@ -66,7 +66,7 @@
     <div class="quick-actions">
         <a href="{% url 'crear_cliente' %}" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo cliente</a>
         <a href="{% url 'crear_prestamo' %}" class="qa-btn qa-btn-primary"><i class="fa-solid fa-plus"></i> Nuevo prestamo</a>
-        <a href="#" class="qa-btn qa-btn-outline"><i class="fa-solid fa-hand-holding-dollar"></i> Registrar pago</a>
+        <a href="{% url 'registrar_pago' %}" class="qa-btn qa-btn-outline"><i class="fa-solid fa-hand-holding-dollar"></i> Registrar pago</a>
     </div>
 
     <!-- PANELES INFERIORES -->
