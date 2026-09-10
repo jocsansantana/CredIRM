@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Cancelar Préstamo</h2>
+            <div class="page-title-sub">Esta acción no se puede deshacer</div>
+        </div>
+        <a href="{% url 'prestamos' %}" class="btn-dash-outline">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <div class="dark-panel">
+        <div class="dark-panel-header">Confirmar cancelación</div>
+        <div class="dark-panel-body">
+
+            <p style="color:#cfd2e3; margin-bottom: 1.5rem;">
+                ¿Estás seguro de que deseas cancelar el préstamo
+                <strong>#{{ prestamo.id }}</strong> de
+                <strong>{{ prestamo.cliente.nombres }} {{ prestamo.cliente.apellidos }}</strong>
+                por <strong>${{ prestamo.monto }}</strong>?
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <a href="{% url 'prestamos' %}" class="btn-dash-outline">Cancelar</a>
+                    <button type="submit" class="btn-dash-danger">
+                        <i class="fa-solid fa-ban"></i> Cancelar préstamo
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

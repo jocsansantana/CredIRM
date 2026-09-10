@@ -48,7 +48,7 @@
                             <a href="{% url 'editar_cliente' cliente.id %}" class="icon-btn icon-btn-edit" title="Editar">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-                            <a href="#" class="icon-btn icon-btn-loan" title="Prestamos">
+                            <a href="{% url 'prestamos_cliente' cliente.id %}" class="icon-btn icon-btn-loan" title="Prestamos">
                                 <i class="fa-solid fa-money-bill"></i>
                             </a>
                             {% if user.is_staff %}

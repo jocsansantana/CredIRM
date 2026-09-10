@@ -23,3 +23,8 @@ class PrestamoForm(forms.ModelForm):
             'fecha_fin': forms.DateInput(attrs={'type': 'date'}),
             'observaciones': forms.Textarea(attrs={'rows': 2}),
         }
+        
+class PrestamoEditForm(forms.ModelForm):
+    class Meta:
+        model = Prestamo
+        fields = ['estado', 'observaciones']

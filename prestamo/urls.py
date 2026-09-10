@@ -15,6 +15,10 @@ urlpatterns = [
     
     #SECCIÓN PARA PRESTAMOS
     
-    path("prestamos/", views.prestamos, name="prestamos"),
+    path('prestamos/', views.prestamos, name='prestamos'),
     path('prestamos/nuevo/', views.crear_prestamo, name='crear_prestamo'),
+    path('prestamos/<int:id>/', views.prestamo_detalle, name='prestamo_detalle'),
+    path('prestamos/editar/<int:id>/', views.editar_prestamo, name='editar_prestamo'),
+    path('prestamos/eliminar/<int:id>/', views.eliminar_prestamo, name='eliminar_prestamo'),
+    path('clientes/<int:cliente_id>/prestamos/', views.prestamos_cliente, name='prestamos_cliente'),
 ] 

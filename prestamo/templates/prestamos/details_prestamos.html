@@ -1,0 +1,129 @@
+{% extends "index.html" %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header">
+        <div>
+            <h2 class="page-title">Préstamo #{{ prestamo.id }}</h2>
+            <div class="page-title-sub">{{ prestamo.cliente.nombres }} {{ prestamo.cliente.apellidos }}</div>
+        </div>
+        <a href="{% url 'prestamos' %}" class="btn-dash-outline">
+            <i class="fa-solid fa-arrow-left"></i> Volver
+        </a>
+    </div>
+
+    <div class="dark-panel" style="margin-bottom: 1.5rem;">
+        <div class="dark-panel-header">Resumen del préstamo</div>
+        <div class="dark-panel-body">
+
+            <div class="detail-row">
+                <div class="detail-label">Cliente</div>
+                <div class="detail-value">{{ prestamo.cliente.nombres }} {{ prestamo.cliente.apellidos }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Monto</div>
+                <div class="detail-value">${{ prestamo.monto }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Tasa de interés</div>
+                <div class="detail-value">{{ prestamo.tasa_interes }}%</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Total interés</div>
+                <div class="detail-value">${{ prestamo.total_interes }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Total a pagar</div>
+                <div class="detail-value">${{ prestamo.total_pagar }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Total pagado</div>
+                <div class="detail-value">${{ total_pagado }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Saldo pendiente</div>
+                <div class="detail-value">${{ saldo_pendiente }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Frecuencia</div>
+                <div class="detail-value">{{ prestamo.get_frecuencia_pago_display }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Fecha inicio</div>
+                <div class="detail-value">{{ prestamo.fecha_inicio|date:"d/m/Y" }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Fecha fin</div>
+                <div class="detail-value">{{ prestamo.fecha_fin|date:"d/m/Y" }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Estado</div>
+                <div class="detail-value">
+                    {% if prestamo.estado == 'ACTIVO' %}
+                        <span class="badge-pill badge-pill-green">{{ prestamo.get_estado_display }}</span>
+                    {% elif prestamo.estado == 'VENCIDO' %}
+                        <span class="badge-pill badge-pill-red">{{ prestamo.get_estado_display }}</span>
+                    {% elif prestamo.estado == 'PAGADO' %}
+                        <span class="badge-pill badge-pill-blue">{{ prestamo.get_estado_display }}</span>
+                    {% else %}
+                        <span class="badge-pill badge-pill-gray">{{ prestamo.get_estado_display }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% if prestamo.observaciones %}
+            <div class="detail-row">
+                <div class="detail-label">Observaciones</div>
+                <div class="detail-value">{{ prestamo.observaciones }}</div>
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <div class="dark-panel">
+        <div class="dark-panel-header">Tabla de amortización</div>
+        <div class="panel-body no-pad">
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Vencimiento</th>
+                        <th>Capital</th>
+                        <th>Interés</th>
+                        <th>Cuota</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cuota in cuotas %}
+                    <tr>
+                        <td>{{ cuota.numero }}</td>
+                        <td>{{ cuota.fecha_vencimiento|date:"d/m/Y" }}</td>
+                        <td>${{ cuota.capital }}</td>
+                        <td>${{ cuota.interes }}</td>
+                        <td>${{ cuota.monto }}</td>
+                        <td>
+                            {% if cuota.estado == 'PAGADA' %}
+                                <span class="badge-pill badge-pill-green">Pagada</span>
+                            {% elif cuota.estado == 'VENCIDA' %}
+                                <span class="badge-pill badge-pill-red">Vencida</span>
+                            {% else %}
+                                <span class="badge-pill badge-pill-gray">Pendiente</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="empty-row">No hay cuotas generadas.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

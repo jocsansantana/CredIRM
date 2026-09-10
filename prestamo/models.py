@@ -44,6 +44,13 @@ class Prestamo(models.Model):
     def __str__(self):
         return f"Préstamo #{self.id} - {self.cliente}"
 
+    def save(self, *args, **kwargs):
+        self.total_interes = self.monto * (self.tasa_interes / 100)
+        self.total_pagar = self.monto + self.total_interes
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Préstamo #{self.id} - {self.cliente}"
 
 class Cuota(models.Model):
     
@@ -63,7 +70,7 @@ class Cuota(models.Model):
     
     def __str__(self):
         return f"Cuota {self.numero} - Préstamo #{self.prestamo.id}"
-
+    
 
 class Pago(models.Model):
     

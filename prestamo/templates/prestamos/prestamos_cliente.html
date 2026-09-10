@@ -7,29 +7,19 @@
 
     <div class="page-header">
         <div>
-            <h2 class="page-title">Préstamos</h2>
+            <h2 class="page-title">Préstamos de {{ cliente.nombres }} {{ cliente.apellidos }}</h2>
             <div class="page-title-sub">{{ prestamos|length }} préstamo{{ prestamos|length|pluralize }} registrado{{ prestamos|length|pluralize }}</div>
         </div>
-        <a href="{% url 'crear_prestamo' %}" class="btn-dash-primary">
-            <i class="fa-solid fa-plus"></i> Nuevo préstamo
+        <a href="{% url 'clientes' %}" class="btn-dash-outline">
+            <i class="fa-solid fa-arrow-left"></i> Volver
         </a>
     </div>
-
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert-dash">
-                <span><i class="fa-solid fa-circle-check"></i> {{ message }}</span>
-                <button type="button" class="close" onclick="this.parentElement.remove()">&times;</button>
-            </div>
-        {% endfor %}
-    {% endif %}
 
     <div class="dark-panel">
         <table class="dash-table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Cliente</th>
                     <th>Monto</th>
                     <th>Cuotas</th>
                     <th>Frecuencia</th>
@@ -42,7 +32,6 @@
                 {% for prestamo in prestamos %}
                 <tr>
                     <td>{{ prestamo.id }}</td>
-                    <td>{{ prestamo.cliente.nombres|capfirst }} {{ prestamo.cliente.apellidos|capfirst }}</td>
                     <td>${{ prestamo.monto }}</td>
                     <td>{{ prestamo.numero_cuotas }}</td>
                     <td>{{ prestamo.get_frecuencia_pago_display }}</td>
@@ -54,8 +43,6 @@
                             <span class="badge-pill badge-pill-red">{{ prestamo.get_estado_display }}</span>
                         {% elif prestamo.estado == 'PAGADO' %}
                             <span class="badge-pill badge-pill-blue">{{ prestamo.get_estado_display }}</span>
-                        {% elif prestamo.estado == 'CANCELADO' %}
-                            <span class="badge-pill badge-pill-gray">{{ prestamo.get_estado_display }}</span>
                         {% else %}
                             <span class="badge-pill badge-pill-gray">{{ prestamo.get_estado_display }}</span>
                         {% endif %}
@@ -65,20 +52,12 @@
                             <a href="{% url 'prestamo_detalle' prestamo.id %}" class="icon-btn icon-btn-view" title="Ver">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
-                            <a href="{% url 'editar_prestamo' prestamo.id %}" class="icon-btn icon-btn-edit" title="Editar">
-                                <i class="fa-solid fa-pen"></i>
-                            </a>
-                            {% if user.is_staff %}
-                            <a href="{% url 'eliminar_prestamo' prestamo.id %}" class="icon-btn icon-btn-delete" title="Eliminar">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                            {% endif %}
                         </div>
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="8" class="empty-row">Aún no hay préstamos registrados.</td>
+                    <td colspan="7" class="empty-row">Este cliente aún no tiene préstamos registrados.</td>
                 </tr>
                 {% endfor %}
             </tbody>

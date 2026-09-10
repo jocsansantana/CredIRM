@@ -420,3 +420,13 @@
     cursor: not-allowed;
     background-color: #14151f;
 }
+
+.badge-pill-blue {
+    background: rgba(47, 123, 224, 0.18);
+    color: #6badf5;
+}
+
+.badge-pill-gray {
+    background: rgba(148, 152, 173, 0.18);
+    color: #9498ad;
+}
