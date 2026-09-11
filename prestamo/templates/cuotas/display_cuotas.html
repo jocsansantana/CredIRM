@@ -8,76 +8,96 @@
     <div class="page-header">
         <div>
             <h2 class="page-title">Cuotas</h2>
-            <div class="page-title-sub">{{ cuotas|length }} cuota{{ cuotas|length|pluralize }} encontrada{{ cuotas|length|pluralize }}</div>
+            <div class="page-title-sub">{{ total_general }} cuota{{ total_general|pluralize }} encontrada{{ total_general|pluralize }}</div>
         </div>
     </div>
 
     <!-- FILTROS -->
     <div class="quick-actions" style="margin-bottom: 1.5rem;">
-        <a href="{% url 'cuotas' %}" class="btn-dash-{% if filtro == 'TODAS' %}primary{% else %}outline{% endif %}">
-            Todas
-        </a>
-        <a href="{% url 'cuotas' %}?estado=PENDIENTE" class="btn-dash-{% if filtro == 'PENDIENTE' %}primary{% else %}outline{% endif %}">
-            Pendientes
-        </a>
-        <a href="{% url 'cuotas' %}?estado=PAGADA" class="btn-dash-{% if filtro == 'PAGADA' %}primary{% else %}outline{% endif %}">
-            Pagadas
-        </a>
-        <a href="{% url 'cuotas' %}?estado=VENCIDA" class="btn-dash-{% if filtro == 'VENCIDA' %}primary{% else %}outline{% endif %}">
-            Vencidas
-        </a>
+        <a href="{% url 'cuotas' %}" class="btn-dash-{% if filtro == 'TODAS' %}primary{% else %}outline{% endif %}">Todas</a>
+        <a href="{% url 'cuotas' %}?estado=PENDIENTE" class="btn-dash-{% if filtro == 'PENDIENTE' %}primary{% else %}outline{% endif %}">Pendientes</a>
+        <a href="{% url 'cuotas' %}?estado=PARCIAL" class="btn-dash-{% if filtro == 'PARCIAL' %}primary{% else %}outline{% endif %}">Parciales</a>
+        <a href="{% url 'cuotas' %}?estado=PAGADA" class="btn-dash-{% if filtro == 'PAGADA' %}primary{% else %}outline{% endif %}">Pagadas</a>
+        <a href="{% url 'cuotas' %}?estado=VENCIDA" class="btn-dash-{% if filtro == 'VENCIDA' %}primary{% else %}outline{% endif %}">Vencidas</a>
     </div>
 
-    <div class="dark-panel">
-        <table class="dash-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Cliente</th>
-                    <th>Préstamo</th>
-                    <th>Vencimiento</th>
-                    <th>Monto</th>
-                    <th>Estado</th>
-                    <th class="text-end">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for cuota in cuotas %}
-                <tr>
-                    <td>{{ cuota.numero }}</td>
-                    <td>{{ cuota.prestamo.cliente.nombres|capfirst }} {{ cuota.prestamo.cliente.apellidos|capfirst }}</td>
-                    <td>
-                        <a href="{% url 'prestamo_detalle' cuota.prestamo.id %}" class="link-action">
-                            Préstamo #{{ cuota.prestamo.id }}
-                        </a>
-                    </td>
-                    <td>{{ cuota.fecha_vencimiento|date:"d/m/Y" }}</td>
-                    <td>${{ cuota.monto }}</td>
-                    <td>
-                        {% if cuota.estado == 'PAGADA' %}
-                            <span class="badge-pill badge-pill-green">Pagada</span>
-                        {% elif cuota.estado == 'VENCIDA' %}
-                            <span class="badge-pill badge-pill-red">Vencida</span>
-                        {% else %}
-                            <span class="badge-pill badge-pill-gray">Pendiente</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        <div class="actions-cell">
-                            <a href="{% url 'prestamo_detalle' cuota.prestamo.id %}" class="icon-btn icon-btn-view" title="Ver préstamo">
-                                <i class="fa-solid fa-eye"></i>
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="empty-row">No hay cuotas para mostrar.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    {% if clientes_con_cuotas %}
+        {% for grupo in clientes_con_cuotas %}
+        <div class="dark-panel accordion-panel {% if grupo.es_primero %}open{% endif %}" style="margin-bottom: 1rem;">
+            <div class="accordion-header" onclick="toggleAccordion(this)" role="button" tabindex="0">
+                <div class="accordion-client">
+                    <div class="accordion-avatar">{{ grupo.cliente.nombres|first|upper }}</div>
+                    <span class="accordion-name">{{ grupo.cliente.nombres|capfirst }} {{ grupo.cliente.apellidos|capfirst }}</span>
+                </div>
+                <div class="accordion-meta">
+                    <span class="accordion-count">{{ grupo.total_cuotas }} cuota{{ grupo.total_cuotas|pluralize }}</span>
+                    <i class="fa-solid fa-chevron-down accordion-icon"></i>
+                </div>
+            </div>
+
+            <div class="accordion-body">
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Préstamo</th>
+                            <th>Vencimiento</th>
+                            <th>Monto</th>
+                            <th>Estado</th>
+                            <th class="text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cuota in grupo.cuotas %}
+                        <tr>
+                            <td>{{ cuota.numero }}</td>
+                            <td>
+                                <a href="{% url 'prestamo_detalle' cuota.prestamo.id %}" class="link-action">
+                                    Préstamo #{{ cuota.prestamo.id }}
+                                </a>
+                            </td>
+                            <td>{{ cuota.fecha_vencimiento|date:"d/m/Y" }}</td>
+                            <td>${{ cuota.monto }}</td>
+                            <td>
+                                {% if cuota.estado == 'PAGADA' %}
+                                    <span class="badge-pill badge-pill-green">Pagada</span>
+                                {% elif cuota.estado == 'PARCIAL' %}
+                                    <span class="badge-pill badge-pill-blue">Parcial (${{ cuota.saldo_pendiente }} restante)</span>
+                                {% elif cuota.estado == 'VENCIDA' %}
+                                    <span class="badge-pill badge-pill-red">Vencida</span>
+                                {% else %}
+                                    <span class="badge-pill badge-pill-gray">Pendiente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="actions-cell">
+                                    {% with ultimo_pago=cuota.pagos.last %}
+                                        {% if ultimo_pago %}
+                                        <a href="{% url 'comprobante_pago' ultimo_pago.id %}" class="icon-btn icon-btn-loan" title="Ver comprobante">
+                                            <i class="fa-solid fa-receipt"></i>
+                                        </a>
+                                        {% endif %}
+                                    {% endwith %}
+                                    <a href="{% url 'prestamo_detalle' cuota.prestamo.id %}" class="icon-btn icon-btn-view" title="Ver préstamo">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="dark-panel">
+            <div class="empty-row">No hay cuotas para mostrar.</div>
+        </div>
+    {% endif %}
 
 </div>
+
+<script src="{% static 'js/cuotas_accordion.js' %}"></script>
+
 {% endblock %}

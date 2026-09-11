@@ -27,4 +27,5 @@ urlpatterns = [
     
     #SECCIÓN DE PAGO
     path('pagos/nuevo/', views.registrar_pago, name='registrar_pago'),
+    path('pagos/comprobante/<int:id>/', views.comprobante_pago, name='comprobante_pago'),
 ] 

@@ -17,11 +17,10 @@ class ClienteForm(forms.ModelForm):
 class PrestamoForm(forms.ModelForm):
     class Meta:
         model = Prestamo
-        exclude = ['total_interes', 'total_pagar']
+        exclude = ['total_interes', 'total_pagar', 'fecha_fin']
         widgets = {
             'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_fin': forms.DateInput(attrs={'type': 'date'}),
-            'observaciones': forms.Textarea(attrs={'rows': 2}),
+            'observaciones': forms.Textarea(attrs={'rows': 3}),
         }
         
 class PrestamoEditForm(forms.ModelForm):
@@ -50,4 +49,5 @@ class PagoForm(forms.ModelForm):
     @staticmethod
     def label_cuota(cuota):
         cliente = f"{cuota.prestamo.cliente.nombres} {cuota.prestamo.cliente.apellidos}"
-        return f"Préstamo #{cuota.prestamo.id} - {cliente} - Cuota {cuota.numero} - ${cuota.monto}"
+        saldo = cuota.saldo_pendiente
+        return f"Préstamo #{cuota.prestamo.id} - {cliente} - Cuota {cuota.numero} - Saldo: ${saldo}"

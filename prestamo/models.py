@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from dateutil.relativedelta import relativedelta
+from datetime import timedelta
 
 class Cliente(models.Model):
     nombres = models.CharField(max_length=50)
@@ -41,12 +43,18 @@ class Prestamo(models.Model):
     estado = models.CharField( max_length=20, choices=ESTADOS, default='PENDIENTE')
     observaciones = models.TextField(blank=True)
 
-    def __str__(self):
-        return f"Préstamo #{self.id} - {self.cliente}"
-
     def save(self, *args, **kwargs):
         self.total_interes = self.monto * (self.tasa_interes / 100)
         self.total_pagar = self.monto + self.total_interes
+
+        # Calcular fecha_fin según frecuencia y número de cuotas
+        if self.frecuencia_pago == 'SEMANAL':
+            self.fecha_fin = self.fecha_inicio + timedelta(weeks=self.numero_cuotas)
+        elif self.frecuencia_pago == 'QUINCENAL':
+            self.fecha_fin = self.fecha_inicio + timedelta(days=15 * self.numero_cuotas)
+        else:  # MENSUAL
+            self.fecha_fin = self.fecha_inicio + relativedelta(months=self.numero_cuotas)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -56,6 +64,7 @@ class Cuota(models.Model):
     
     ESTADOS = [
         ('PENDIENTE', 'Pendiente'),
+        ('PARCIAL', 'Pago parcial'),
         ('PAGADA', 'Pagada'),
         ('VENCIDA', 'Vencida'),
     ]
@@ -63,13 +72,35 @@ class Cuota(models.Model):
     prestamo = models.ForeignKey(Prestamo, on_delete=models.CASCADE, related_name='cuotas')
     numero = models.PositiveIntegerField()
     fecha_vencimiento = models.DateField()
-    capital = models.DecimalField(max_digits=10,decimal_places=2)
+    capital = models.DecimalField(max_digits=10, decimal_places=2)
     interes = models.DecimalField(max_digits=10, decimal_places=2)
-    monto = models.DecimalField(max_digits=10,decimal_places=2)
-    estado = models.CharField(max_length=20,choices=ESTADOS,default='PENDIENTE')
-    
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    estado = models.CharField(max_length=20, choices=ESTADOS, default='PENDIENTE')
+
     def __str__(self):
         return f"Cuota {self.numero} - Préstamo #{self.prestamo.id}"
+
+    @property
+    def total_pagado(self):
+        return self.pagos.aggregate(total=models.Sum('monto'))['total'] or 0
+
+    @property
+    def saldo_pendiente(self):
+        return self.monto - self.total_pagado
+
+    def actualizar_estado(self):
+        """Recalcula el estado de la cuota según lo que se ha pagado."""
+        pagado = self.total_pagado
+        if pagado >= self.monto:
+            self.estado = 'PAGADA'
+        elif pagado > 0:
+            self.estado = 'PARCIAL'
+        else:
+            self.estado = 'PENDIENTE'
+        self.save()
+    @property
+    def ultimo_pago(self):
+        return self.pagos.order_by('-fecha_pago').first()
     
 
 class Pago(models.Model):

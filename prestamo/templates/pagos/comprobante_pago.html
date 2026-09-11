@@ -1,0 +1,91 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/clientes.css' %}">
+<link rel="stylesheet" href="{% static 'css/comprobante.css' %}">
+
+<div class="page-wrap">
+
+    <div class="page-header no-print">
+        <div>
+            <h2 class="page-title">Comprobante de Pago</h2>
+            <div class="page-title-sub">Pago #{{ pago.id }} registrado exitosamente</div>
+        </div>
+        <div style="display:flex; gap:0.6rem;">
+            <a href="{% url 'cuotas' %}" class="btn-dash-outline">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+            <button onclick="window.print()" class="btn-dash-primary">
+                <i class="fa-solid fa-print"></i> Imprimir / Guardar PDF
+            </button>
+        </div>
+    </div>
+
+    <div class="comprobante-box">
+
+        <div class="comprobante-header">
+            <div class="comprobante-brand">
+                <i class="fa-solid fa-bolt"></i> CREDIRM
+            </div>
+            <div class="comprobante-tag">COMPROBANTE DE PAGO</div>
+        </div>
+
+        <div class="comprobante-numero">
+            N° {{ pago.id|stringformat:"05d" }}
+        </div>
+
+        <div class="comprobante-section">
+            <div class="comprobante-row">
+                <span class="comprobante-label">Fecha de pago</span>
+                <span class="comprobante-value">{{ pago.fecha_pago|date:"d/m/Y H:i" }}</span>
+            </div>
+            <div class="comprobante-row">
+                <span class="comprobante-label">Cliente</span>
+                <span class="comprobante-value">{{ pago.cuota.prestamo.cliente.nombres }} {{ pago.cuota.prestamo.cliente.apellidos }}</span>
+            </div>
+            <div class="comprobante-row">
+                <span class="comprobante-label">Cédula</span>
+                <span class="comprobante-value">{{ pago.cuota.prestamo.cliente.cedula }}</span>
+            </div>
+            <div class="comprobante-row">
+                <span class="comprobante-label">Préstamo</span>
+                <span class="comprobante-value">#{{ pago.cuota.prestamo.id }}</span>
+            </div>
+            <div class="comprobante-row">
+                <span class="comprobante-label">Cuota pagada</span>
+                <span class="comprobante-value">N° {{ pago.cuota.numero }} de {{ pago.cuota.prestamo.numero_cuotas }}</span>
+            </div>
+            <div class="comprobante-row">
+                <span class="comprobante-label">Método de pago</span>
+                <span class="comprobante-value">{{ pago.get_metodo_pago_display }}</span>
+            </div>
+            {% if pago.referencia %}
+            <div class="comprobante-row">
+                <span class="comprobante-label">Referencia</span>
+                <span class="comprobante-value">{{ pago.referencia }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="comprobante-total">
+            <span>Monto pagado</span>
+            <span class="comprobante-total-value">${{ pago.monto }}</span>
+        </div>
+
+        {% if pago.observaciones %}
+        <div class="comprobante-obs">
+            <strong>Observaciones:</strong> {{ pago.observaciones }}
+        </div>
+        {% endif %}
+
+        <div class="comprobante-footer">
+            Cliente registrado {{ pago.cuota.prestamo.cliente.nombres|default:"" }}
+            {% if request.user.first_name %}
+                -  Atendido por {{ request.user.first_name }} {{ request.user.last_name }}
+            {% endif %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

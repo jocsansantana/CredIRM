@@ -448,3 +448,96 @@
     color: #6a5cd6;
     text-decoration: underline;
 }
+
+
+
+/* ---------- ACORDEÓN DE CUOTAS ---------- */
+.accordion-panel {
+    padding: 0 !important;
+    overflow: hidden;
+}
+
+.accordion-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    background: transparent;
+    color: #fff;
+    padding: 1.1rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.accordion-header:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.accordion-client {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.75rem;
+}
+
+.accordion-avatar {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7b6bf0, #6a5cd6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.accordion-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.accordion-meta {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 0.85rem;
+    white-space: nowrap;
+}
+
+.accordion-count {
+    background: rgba(123, 107, 240, 0.15);
+    color: #a99cf5;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+}
+
+.accordion-icon {
+    color: #7d8098;
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+}
+
+.accordion-panel.open .accordion-icon {
+    transform: rotate(180deg);
+}
+
+.accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.accordion-panel.open .accordion-body {
+    max-height: 3000px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}

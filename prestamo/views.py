@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import logout
 from .utils import *
+from itertools import groupby
+from operator import attrgetter
 
 #DEFINE QUIEN ES EL ADMINISTRADOR
 def es_admin(user):
@@ -227,16 +229,30 @@ def eliminar_prestamo(request, id):
 def cuotas(request):
     filtro = request.GET.get('estado', 'TODAS')
 
-    cuotas = Cuota.objects.select_related('prestamo__cliente').order_by('fecha_vencimiento')
+    cuotas_qs = Cuota.objects.select_related('prestamo__cliente').prefetch_related('pagos').order_by(
+        'prestamo__cliente__nombres', 'prestamo__cliente__apellidos', 'fecha_vencimiento'
+    )
 
     if filtro != 'TODAS':
-        cuotas = cuotas.filter(estado=filtro)
+        cuotas_qs = cuotas_qs.filter(estado=filtro)
+
+    clientes_con_cuotas = []
+    for i, (cliente, cuotas_grupo) in enumerate(groupby(cuotas_qs, key=attrgetter('prestamo.cliente'))):
+        cuotas_grupo = list(cuotas_grupo)
+        clientes_con_cuotas.append({
+            'cliente': cliente,
+            'cuotas': cuotas_grupo,
+            'total_cuotas': len(cuotas_grupo),
+            'es_primero': i == 0,
+        })
 
     return render(request, 'cuotas/display_cuotas.html', {
-        'cuotas': cuotas,
+        'clientes_con_cuotas': clientes_con_cuotas,
         'filtro': filtro,
+        'total_general': cuotas_qs.count(),
     })
 
+#REGISTRAR PAGO
 @login_required
 def registrar_pago(request):
     if request.method == 'POST':
@@ -245,23 +261,32 @@ def registrar_pago(request):
             pago = form.save()
 
             cuota = pago.cuota
-            cuota.estado = 'PAGADA'
-            cuota.save()
+            cuota.actualizar_estado()
 
             registrar_actividad(
                 tipo='pago',
-                descripcion=f'Pago de ${pago.monto} recibido de {cuota.prestamo.cliente}',
+                descripcion=f'Pago de ${pago.monto} recibido de {cuota.prestamo.cliente} (Cuota {cuota.numero})',
                 usuario=request.user
             )
 
-            # Si todas las cuotas del préstamo ya están pagadas, marcar el préstamo como PAGADO
+            # Si TODAS las cuotas del préstamo están pagadas, marcar el préstamo como PAGADO
             prestamo = cuota.prestamo
             if not prestamo.cuotas.exclude(estado='PAGADA').exists():
                 prestamo.estado = 'PAGADO'
                 prestamo.save()
 
-            messages.success(request, 'Pago registrado exitosamente')
-            return redirect('prestamos')
+            if cuota.estado == 'PARCIAL':
+                messages.success(request, f'Pago parcial registrado. Saldo pendiente de esta cuota: ${cuota.saldo_pendiente}')
+            else:
+                messages.success(request, 'Pago registrado exitosamente')
+
+            return redirect('comprobante_pago', id=pago.id)
     else:
         form = PagoForm()
     return render(request, 'pagos/form_pago.html', {'form': form})
+
+
+@login_required
+def comprobante_pago(request, id):
+    pago = get_object_or_404(Pago, id=id)
+    return render(request, 'pagos/comprobante_pago.html', {'pago': pago})

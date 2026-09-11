@@ -1,0 +1,122 @@
+/* ---------- COMPROBANTE DE PAGO ---------- */
+.comprobante-box {
+    max-width: 480px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 14px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7ef;
+}
+
+.comprobante-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.comprobante-brand {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #7b6bf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.comprobante-tag {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: #8b8ea3;
+    margin-top: 0.3rem;
+}
+
+.comprobante-numero {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e1e2d;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px dashed #e5e7ef;
+}
+
+.comprobante-section {
+    margin-bottom: 1rem;
+}
+
+.comprobante-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f1f5;
+    font-size: 0.88rem;
+}
+
+.comprobante-label {
+    color: #8b8ea3;
+    font-weight: 600;
+}
+
+.comprobante-value {
+    color: #1e1e2d;
+    font-weight: 600;
+    text-align: right;
+}
+
+.comprobante-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #7b6bf0, #6a5cd6);
+    color: #fff;
+    padding: 1rem 1.2rem;
+    border-radius: 10px;
+    margin: 1.2rem 0;
+    font-weight: 700;
+}
+
+.comprobante-total-value {
+    font-size: 1.4rem;
+}
+
+.comprobante-obs {
+    font-size: 0.82rem;
+    color: #4b4f5e;
+    background: #f8f8fb;
+    padding: 0.8rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.comprobante-footer {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #8b8ea3;
+    padding-top: 1rem;
+    border-top: 1px dashed #e5e7ef;
+}
+
+/* Ocultar elementos de navegación al imprimir */
+@media print {
+
+    .sidebar,
+    .sidebar-toggle,
+    .sidebar-overlay,
+    .no-print {
+        display: none !important;
+    }
+
+    .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .page-wrap {
+        padding: 0 !important;
+    }
+
+    body {
+        background: #fff !important;
+    }
+}
