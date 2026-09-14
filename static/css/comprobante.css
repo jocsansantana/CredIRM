@@ -1,4 +1,4 @@
-/* ---------- COMPROBANTE DE PAGO ---------- */
+/* ---------- COMPROBANTE DE PAGO (VISTA EN PANTALLA) ---------- */
 .comprobante-box {
     max-width: 480px;
     margin: 0 auto;
@@ -95,28 +95,4 @@
     color: #8b8ea3;
     padding-top: 1rem;
     border-top: 1px dashed #e5e7ef;
-}
-
-/* Ocultar elementos de navegación al imprimir */
-@media print {
-
-    .sidebar,
-    .sidebar-toggle,
-    .sidebar-overlay,
-    .no-print {
-        display: none !important;
-    }
-
-    .main-content {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    .page-wrap {
-        padding: 0 !important;
-    }
-
-    body {
-        background: #fff !important;
-    }
 }

@@ -21,6 +21,7 @@ urlpatterns = [
     path('prestamos/editar/<int:id>/', views.editar_prestamo, name='editar_prestamo'),
     path('prestamos/eliminar/<int:id>/', views.eliminar_prestamo, name='eliminar_prestamo'),
     path('clientes/<int:cliente_id>/prestamos/', views.prestamos_cliente, name='prestamos_cliente'),
+    path('prestamos/<int:id>/amortizacion/descargar/', views.descargar_amortizacion, name='descargar_amortizacion'),
     
     #SECCIÓN DE CUOTA
     path('cuotas/', views.cuotas, name='cuotas'),
@@ -28,4 +29,6 @@ urlpatterns = [
     #SECCIÓN DE PAGO
     path('pagos/nuevo/', views.registrar_pago, name='registrar_pago'),
     path('pagos/comprobante/<int:id>/', views.comprobante_pago, name='comprobante_pago'),
+    path('pagos/comprobante/<int:id>/', views.comprobante_pago, name='comprobante_pago'),
+    path('pagos/comprobante/<int:id>/descargar/', views.descargar_comprobante, name='descargar_comprobante'),
 ] 

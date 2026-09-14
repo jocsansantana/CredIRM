@@ -5,19 +5,34 @@
 
 <div class="page-wrap">
 
-    <div class="page-header">
+    <div class="page-header no-print">
         <div>
             <h2 class="page-title">Préstamo #{{ prestamo.id }}</h2>
             <div class="page-title-sub">{{ prestamo.cliente.nombres }} {{ prestamo.cliente.apellidos }}</div>
         </div>
-        <a href="{% url 'prestamos' %}" class="btn-dash-outline">
-            <i class="fa-solid fa-arrow-left"></i> Volver
-        </a>
+        <div style="display:flex; gap:0.6rem;">
+            <a href="{% url 'prestamos' %}" class="btn-dash-outline">
+                <i class="fa-solid fa-arrow-left"></i> Volver
+            </a>
+            <button onclick="window.print()" class="btn-dash-outline">
+                <i class="fa-solid fa-print"></i> Imprimir
+            </button>
+            <a href="{% url 'descargar_amortizacion' prestamo.id %}" class="btn-dash-primary">
+                <i class="fa-solid fa-download"></i> Descargar PDF
+            </a>
+        </div>
+    </div>
+
+    <!-- Solo visible al imprimir -->
+    <div class="print-only">
+        <div class="print-brand">CREDIRM</div>
+        <div class="print-tag">TABLA DE AMORTIZACIÓN</div>
+        <div class="print-numero">Préstamo N° {{ prestamo.id|stringformat:"05d" }}</div>
     </div>
 
     <div class="dark-panel" style="margin-bottom: 1.5rem;">
         <div class="dark-panel-header">Resumen del préstamo</div>
-        <div class="dark-panel-body">
+        <div class="dark-panel-body resumen-grid">
 
             <div class="detail-row">
                 <div class="detail-label">Cliente</div>
@@ -25,27 +40,27 @@
             </div>
             <div class="detail-row">
                 <div class="detail-label">Monto</div>
-                <div class="detail-value">${{ prestamo.monto }}</div>
+                <div class="detail-value">${{ prestamo.monto|floatformat:2 }}</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Tasa de interés</div>
-                <div class="detail-value">{{ prestamo.tasa_interes }}%</div>
+                <div class="detail-value">{{ prestamo.tasa_interes|floatformat:2 }}%</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Total interés</div>
-                <div class="detail-value">${{ prestamo.total_interes }}</div>
+                <div class="detail-value">${{ prestamo.total_interes|floatformat:2 }}</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Total a pagar</div>
-                <div class="detail-value">${{ prestamo.total_pagar }}</div>
+                <div class="detail-value">${{ prestamo.total_pagar|floatformat:2 }}</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Total pagado</div>
-                <div class="detail-value">${{ total_pagado }}</div>
+                <div class="detail-value">${{ total_pagado|floatformat:2 }}</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Saldo pendiente</div>
-                <div class="detail-value">${{ saldo_pendiente }}</div>
+                <div class="detail-value">${{ saldo_pendiente|floatformat:2 }}</div>
             </div>
             <div class="detail-row">
                 <div class="detail-label">Frecuencia</div>
@@ -102,9 +117,9 @@
                     <tr>
                         <td>{{ cuota.numero }}</td>
                         <td>{{ cuota.fecha_vencimiento|date:"d/m/Y" }}</td>
-                        <td>${{ cuota.capital }}</td>
-                        <td>${{ cuota.interes }}</td>
-                        <td>${{ cuota.monto }}</td>
+                        <td>${{ cuota.capital|floatformat:2 }}</td>
+                        <td>${{ cuota.interes|floatformat:2 }}</td>
+                        <td>${{ cuota.monto|floatformat:2 }}</td>
                         <td>
                             {% if cuota.estado == 'PAGADA' %}
                                 <span class="badge-pill badge-pill-green">Pagada</span>
@@ -122,6 +137,17 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Solo visible al imprimir -->
+    <div class="print-only">
+        <div class="print-total">
+            <span class="print-total-label">TOTAL A PAGAR</span>
+            ${{ prestamo.total_pagar|floatformat:2 }}
+        </div>
+        <div class="print-footer">
+            Tabla de amortización generada por CREDIRM el {{ prestamo.fecha_inicio|date:"d/m/Y" }}
         </div>
     </div>
 

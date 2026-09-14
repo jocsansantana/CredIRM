@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ css_path }}">
+</head>
+<body>
+
+    <div class="brand">CREDIRM</div>
+    <div class="tag">TABLA DE AMORTIZACIÓN</div>
+
+    <div class="numero">Préstamo N° {{ prestamo.id|stringformat:"05d" }}</div>
+
+    <table class="resumen">
+        <tr>
+            <td class="label">Cliente</td>
+            <td class="value">{{ prestamo.cliente.nombres }} {{ prestamo.cliente.apellidos }}</td>
+            <td class="label">Cédula</td>
+            <td class="value">{{ prestamo.cliente.cedula }}</td>
+        </tr>
+        <tr>
+            <td class="label">Monto del préstamo</td>
+            <td class="value">${{ prestamo.monto }}</td>
+            <td class="label">Tasa de interés</td>
+            <td class="value">{{ prestamo.tasa_interes }}%</td>
+        </tr>
+        <tr>
+            <td class="label">Total a pagar</td>
+            <td class="value">${{ prestamo.total_pagar }}</td>
+            <td class="label">Frecuencia</td>
+            <td class="value">{{ prestamo.get_frecuencia_pago_display }}</td>
+        </tr>
+        <tr>
+            <td class="label">Fecha de inicio</td>
+            <td class="value">{{ prestamo.fecha_inicio|date:"d/m/Y" }}</td>
+            <td class="label">Fecha de fin</td>
+            <td class="value">{{ prestamo.fecha_fin|date:"d/m/Y" }}</td>
+        </tr>
+    </table>
+
+    <div class="cuotas-titulo {% if cuotas|length > 6 %}salto-pagina{% endif %}">
+        Detalle de cuotas
+    </div>
+
+    <table class="cuotas">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Vencimiento</th>
+                <th>Capital</th>
+                <th>Interés</th>
+                <th>Cuota</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cuota in cuotas %}
+            <tr>
+                <td>{{ cuota.numero }}</td>
+                <td>{{ cuota.fecha_vencimiento|date:"d/m/Y" }}</td>
+                <td>${{ cuota.capital }}</td>
+                <td>${{ cuota.interes }}</td>
+                <td>${{ cuota.monto }}</td>
+                <td>
+                    {% if cuota.estado == 'PAGADA' %}
+                        <span class="estado-pagada">Pagada</span>
+                    {% elif cuota.estado == 'PARCIAL' %}
+                        <span class="estado-parcial">Parcial</span>
+                    {% elif cuota.estado == 'VENCIDA' %}
+                        <span class="estado-vencida">Vencida</span>
+                    {% else %}
+                        <span class="estado-pendiente">Pendiente</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total">
+        <span class="total-label">TOTAL A PAGAR</span>
+        ${{ prestamo.total_pagar }}
+    </div>
+
+    <div class="footer">
+        Tabla de amortización generada por CREDIRM el {{ prestamo.fecha_inicio|date:"d/m/Y" }}
+    </div>
+
+</body>
+</html>

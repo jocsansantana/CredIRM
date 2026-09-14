@@ -13,6 +13,10 @@ from django.contrib.auth import logout
 from .utils import *
 from itertools import groupby
 from operator import attrgetter
+import os
+from django.conf import settings
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
 
 #DEFINE QUIEN ES EL ADMINISTRADOR
 def es_admin(user):
@@ -290,3 +294,55 @@ def registrar_pago(request):
 def comprobante_pago(request, id):
     pago = get_object_or_404(Pago, id=id)
     return render(request, 'pagos/comprobante_pago.html', {'pago': pago})
+
+@login_required
+def descargar_comprobante(request, id):
+    pago = get_object_or_404(Pago, id=id)
+
+    css_path = os.path.join(settings.BASE_DIR, 'static', 'css', 'comprobante_pdf.css')
+    css_uri = 'file:///' + css_path.replace('\\', '/')
+
+    html = render_to_string('pagos/comprobante_pago_pdf.html', {
+        'pago': pago,
+        'css_path': css_uri
+    })
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="comprobante_pago_{pago.id}.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Hubo un error al generar el PDF', status=500)
+
+    return response
+
+@login_required
+def descargar_amortizacion(request, id):
+    prestamo = get_object_or_404(Prestamo, id=id)
+    cuotas = prestamo.cuotas.order_by('numero')
+
+    total_pagado = Pago.objects.filter(cuota__prestamo=prestamo).aggregate(
+        total=Sum('monto')
+    )['total'] or 0
+
+    css_path = os.path.join(settings.BASE_DIR, 'static', 'css', 'amortizacion_pdf.css')
+    css_uri = 'file:///' + css_path.replace('\\', '/')
+
+    html = render_to_string('prestamos/amortizacion_pdf.html', {
+        'prestamo': prestamo,
+        'cuotas': cuotas,
+        'total_pagado': total_pagado,
+        'saldo_pendiente': prestamo.total_pagar - total_pagado,
+        'css_path': css_uri
+    })
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="amortizacion_prestamo_{prestamo.id}.pdf"'
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+
+    if pisa_status.err:
+        return HttpResponse('Hubo un error al generar el PDF', status=500)
+
+    return response

@@ -19,7 +19,7 @@
 
         <div class="hero-stats">
             <div class="hero-stat">
-                <div class="hero-stat-value">${{ cobrado_mes }}</div>
+                <div class="hero-stat-value">${{ cobrado_mes|floatformat:2 }}</div>
                 <div class="hero-stat-label">Cobrado este mes</div>
             </div>
             <div class="hero-stat">
@@ -50,13 +50,13 @@
 
         <div class="kpi-card">
             <div class="kpi-icon kpi-icon-green"><i class="fa-solid fa-dollar-sign"></i></div>
-            <div class="kpi-value">${{ cobrado_mes }}</div>
+            <div class="kpi-value">${{ cobrado_mes|floatformat:2 }}</div>
             <div class="kpi-label">Cobrado este mes</div>
         </div>
 
         <div class="kpi-card">
             <div class="kpi-icon kpi-icon-red"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <div class="kpi-value">{{ cuotas_atrasadas|length }}</div>
+            <div class="kpi-value">{{ cuotas_atrasadas|length|floatformat:2 }}</div>
             <div class="kpi-label">Cuotas atrasadas</div>
         </div>
 

@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="{{ css_path }}">
+</head>
+<body>
+
+    <div class="brand">CREDIRM</div>
+    <div class="tag">COMPROBANTE DE PAGO</div>
+
+    <div class="numero">N° {{ pago.id|stringformat:"05d" }}</div>
+
+    <table>
+        <tr>
+            <td class="label">Fecha de pago</td>
+            <td class="value">{{ pago.fecha_pago|date:"d/m/Y H:i" }}</td>
+        </tr>
+        <tr>
+            <td class="label">Cliente</td>
+            <td class="value">{{ pago.cuota.prestamo.cliente.nombres }} {{ pago.cuota.prestamo.cliente.apellidos }}</td>
+        </tr>
+        <tr>
+            <td class="label">Cédula</td>
+            <td class="value">{{ pago.cuota.prestamo.cliente.cedula }}</td>
+        </tr>
+        <tr>
+            <td class="label">Préstamo</td>
+            <td class="value">#{{ pago.cuota.prestamo.id }}</td>
+        </tr>
+        <tr>
+            <td class="label">Cuota pagada</td>
+            <td class="value">N° {{ pago.cuota.numero }} de {{ pago.cuota.prestamo.numero_cuotas }}</td>
+        </tr>
+        <tr>
+            <td class="label">Método de pago</td>
+            <td class="value">{{ pago.get_metodo_pago_display }}</td>
+        </tr>
+        {% if pago.referencia %}
+        <tr>
+            <td class="label">Referencia</td>
+            <td class="value">{{ pago.referencia }}</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <div class="total">
+        <span class="total-label">MONTO PAGADO</span>
+        ${{ pago.monto }}
+    </div>
+
+    {% if pago.observaciones %}
+    <div class="obs"><strong>Observaciones:</strong> {{ pago.observaciones }}</div>
+    {% endif %}
+
+    <div class="footer">
+        Comprobante generado por CREDIRM el {{ pago.fecha_pago|date:"d/m/Y" }}
+    </div>
+
+</body>
+</html>
